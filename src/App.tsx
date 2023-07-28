@@ -1,4 +1,5 @@
 import { Fragment, useEffect, useState } from "react";
+import ButtonHint from "./components/ButtonHint";
 import { RadioGroup } from "@headlessui/react";
 import classNames from "classnames";
 
@@ -25,6 +26,7 @@ const magnitudeOptions = [
 export default function App() {
 	const [mag, setMag] = useState<Magnitude>("one");
 	const [baseNum, setBaseNum] = useState(0);
+	const [numberClicks, setNumberClicks] = useState<number>(0);
 
 	useEffect(() => {
 		refreshBaseNum();
@@ -53,21 +55,23 @@ export default function App() {
 	return (
 		<div className="grid place-content-center">
 			<RadioGroup value={mag} onChange={setMagHandler}>
-				<RadioGroup.Label className="text-lg font-medium mb-1 block">
+				<RadioGroup.Label className="mb-1 block text-lg font-medium">
 					Select a number range
 				</RadioGroup.Label>
-				<div className="grid grid-cols-3 mb-3">
+				<div className="mb-4 grid grid-cols-3">
 					{magnitudeOptions.map((magnitude, index, array) => (
 						<RadioGroup.Option key={magnitude.id} value={magnitude.mag} as={Fragment}>
 							{({ checked }) => (
 								<div
 									className={classNames(
 										{
-											"border-l-2 rounded-l-lg": index === 0,
+											"rounded-l-lg border-l-2": index === 0,
 											"rounded-r-lg": index === array.length - 1
 										},
-										"text-center font-bold px-3 py-2 border-slate-100 border-solid border-2 border-l-0 transition-colors cursor-pointer hover:bg-slate-600",
-										checked ? "bg-slate-400" : "bg-slate-700"
+										"cursor-pointer select-none border-2 border-l-0 border-solid border-slate-100 px-3 py-2 text-center font-bold transition-colors ",
+										checked
+											? "bg-slate-400 hover:bg-slate-400"
+											: "bg-slate-700 hover:bg-slate-600"
 									)}
 								>
 									<p className={"cursor-pointer"}>{magnitude.label}</p>
@@ -77,12 +81,16 @@ export default function App() {
 					))}
 				</div>
 			</RadioGroup>
-			<h2
-				className="text-5xl font-bold text-center cursor-pointer px-3 py-1 hover:bg-slate-800 rounded-lg transition-colors"
-				onClick={refreshBaseNum}
+			<button
+				className="mx-auto w-4/5 cursor-pointer select-none rounded-lg px-3 py-1 text-center text-5xl font-bold transition-colors hover:bg-slate-800 active:bg-slate-700"
+				onClick={() => {
+					refreshBaseNum();
+					setNumberClicks(numberClicks + 1);
+				}}
 			>
 				{numberToDisplay()}
-			</h2>
+			</button>
+			<ButtonHint numberClicks={numberClicks}/>
 		</div>
 	);
 }

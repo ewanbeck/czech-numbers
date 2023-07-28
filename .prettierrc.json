@@ -2,5 +2,9 @@
 	"singleQuote": false,
 	"useTabs": true,
 	"tabWidth": 1,
-	"trailingComma": "none"
+	"trailingComma": "none",
+	"importOrder": ["^@core/(.*)$", "^@server/(.*)$", "^@ui/(.*)$", "^[./]"],
+  	"importOrderSeparation": true,
+  	"importOrderSortSpecifiers": true,
+	"plugins": ["prettier-plugin-sort-imports", "prettier-plugin-tailwindcss"]
 }
