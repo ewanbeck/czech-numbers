@@ -1,9 +1,10 @@
 import { Fragment, useEffect, useState } from "react";
 import ButtonHint from "./components/ButtonHint";
 import { RadioGroup } from "@headlessui/react";
+import { calculateNumberFromRandomBaseAndMagnitude } from "./utils";
 import classNames from "classnames";
 
-type Magnitude = "one" | "ten" | "hundred";
+export type Magnitude = "one" | "ten" | "hundred";
 
 const magnitudeOptions = [
 	{
@@ -30,6 +31,7 @@ export default function App() {
 
 	useEffect(() => {
 		refreshBaseNum();
+	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	function setMagHandler(magnitude: Magnitude) {
@@ -38,19 +40,19 @@ export default function App() {
 	}
 
 	function refreshBaseNum() {
-		setBaseNum(Math.random());
+		const currentNumber = numberToDisplay();
+		let newBaseNumber = Math.random();
+		while (
+			currentNumber ===
+			calculateNumberFromRandomBaseAndMagnitude(newBaseNumber, mag)
+		) {
+			newBaseNumber = Math.random();
+		}
+		setBaseNum(newBaseNumber);
 	}
 
-	function numberToDisplay() {
-		switch (mag) {
-			case "one":
-				return Math.ceil(baseNum * 10);
-			case "ten":
-				return Math.ceil(baseNum * 100);
-			case "hundred":
-				return Math.ceil(baseNum * 1000);
-		}
-	}
+	const numberToDisplay = () =>
+		calculateNumberFromRandomBaseAndMagnitude(baseNum, mag);
 
 	return (
 		<div className="grid place-content-center">
@@ -90,7 +92,7 @@ export default function App() {
 			>
 				{numberToDisplay()}
 			</button>
-			<ButtonHint numberClicks={numberClicks}/>
+			<ButtonHint numberClicks={numberClicks} />
 		</div>
 	);
 }
